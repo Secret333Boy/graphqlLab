@@ -44,6 +44,7 @@ module.exports = async (req, res) => {
     const { data } = await client.query(getUserByHash).toPromise();
     if (data.user.length > 0) {
       res.status(200).json(code);
+      return;
     }
 
     if (req.headers.register === 'true') {
@@ -55,6 +56,7 @@ module.exports = async (req, res) => {
         res.status(500).json(error);
       }
       res.status(200).json(code);
+      return;
     }
 
     res.status(404).json('User not found. Try registering?');
