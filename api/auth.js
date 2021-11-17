@@ -39,6 +39,7 @@ module.exports = async (req, res) => {
       .digest('base64');
 
     const getUserByHash = getUserByHashTemplate
+      .slice(0)
       .replace('$hash', code)
       .replace('$login', login);
     const { data } = await client.query(getUserByHash).toPromise();
@@ -49,6 +50,7 @@ module.exports = async (req, res) => {
 
     if (req.headers.register === 'true') {
       const insertUserMutation = insertUserMutationTemplate
+        .slice(0)
         .replace('$hash', code)
         .replace('$login', login);
       const { error } = await client.mutation(insertUserMutation).toPromise();
