@@ -25,31 +25,39 @@ const getUserByHashTemplate = `query getUserByHash {
 }`;
 
 module.exports = async (req, res) => {
-  const login = req.headers.login;
-  const pass = req.headers.pass;
-  const salt =
-    login
-      .split('')
-      .map((el, i) => String.fromCharCode(el.charCodeAt(0) + i))
-      .join('|') + (process.env.SALT_MODIFICATION || '');
-  const code = crypto
-    .createHash('sha256')
-    .update(login + salt + pass)
-    .digest('base64');
+  try {
+    const login = req.headers.login;
+    const pass = req.headers.pass;
+    const salt =
+      login
+        .split('')
+        .map((el, i) => String.fromCharCode(el.charCodeAt(0) + i))
+        .join('|') + (process.env.SALT_MODIFICATION || '');
+    const code = crypto
+      .createHash('sha256')
+      .update(login + salt + pass)
+      .digest('base64');
 
-  const getUserByHash = getUserByHashTemplate
-    .replace('$hash', code)
-    .replace('$login', login);
-  const { data } = await client.query(getUserByHash).toPromise();
-  if (data.user.length > 0) {
-    res.status(200).json(code);
-  }
+    const getUserByHash = getUserByHashTemplate
+      .replace('$hash', code)
+      .replace('$login', login);
+    const { data } = await client.query(getUserByHash).toPromise();
+    if (data.user.length > 0) {
+      res.status(200).json(code);
+    }
 
-  const insertUserMutation = insertUserMutationTemplate
-    .replace('$hash', code)
-    .replace('$login', login);
-  const { error } = await client.mutation(insertUserMutation).toPromise();
-  if (error) {
-    res.status(500).json(error);
+    if (req.headers.register) {
+      const insertUserMutation = insertUserMutationTemplate
+        .replace('$hash', code)
+        .replace('$login', login);
+      const { error } = await client.mutation(insertUserMutation).toPromise();
+      if (error) {
+        res.status(500).json(error);
+      }
+    }
+
+    res.status(404).json('User not found. Try registering?');
+  } catch (e) {
+    console.error(e);
   }
 };
