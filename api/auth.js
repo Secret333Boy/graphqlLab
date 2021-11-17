@@ -54,14 +54,14 @@ module.exports = async (req, res) => {
       const { error } = await client.mutation(insertUserMutation).toPromise();
       if (error) {
         res.status(500).json(error);
+        return;
       }
       res.status(200).json(code);
-      return;
     } else {
-      res.status(404).json({ o: 'User not found. Try registering?', d: data });
+      res.status(404).json('User not found. Try registering?');
     }
-    res.status(500).json({ o: 'Internal error', d: data });
   } catch (e) {
+    res.status(500).json('Internal error: ' + e);
     console.error(e);
   }
 };
