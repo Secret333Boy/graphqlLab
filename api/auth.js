@@ -46,7 +46,7 @@ module.exports = async (req, res) => {
       res.status(200).json(code);
     }
 
-    if (req.headers.register) {
+    if (req.headers.register === 'true') {
       const insertUserMutation = insertUserMutationTemplate
         .replace('$hash', code)
         .replace('$login', login);
@@ -54,6 +54,7 @@ module.exports = async (req, res) => {
       if (error) {
         res.status(500).json(error);
       }
+      res.status(200).json(code);
     }
 
     res.status(404).json('User not found. Try registering?');
