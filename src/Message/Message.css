@@ -1,0 +1,5 @@
+.message{
+  position: absolute;
+  background: rgba(29, 184, 211, .5);
+  top: 20px;
+}
