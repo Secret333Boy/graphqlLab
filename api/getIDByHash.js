@@ -32,6 +32,6 @@ module.exports = async (req, res) => {
     const id = data.user[0].id;
     res.status(id ? 200 : 404).json(id);
   } catch (e) {
-    res.status(500).json('Unexpected error');
+    res.status(500).json('Unexpected error: ' + e);
   }
 };
