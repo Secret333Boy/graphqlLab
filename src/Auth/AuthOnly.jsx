@@ -60,7 +60,7 @@ const AuthOnly = ({ children }) => {
       </form>
     );
   }
-  return <div>{children}</div>;
+  return <>{children}</>;
 };
 
 export default AuthOnly;
