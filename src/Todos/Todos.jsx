@@ -20,6 +20,10 @@ const removeTodoByIdTemplate = `mutation removeTodoById($id: bigint = "") {
 
 const Todos = ({ id }) => {
   const [removedTodo, removeTodo] = useMutation(removeTodoByIdTemplate);
+  if (removedTodo) {
+    console.log('Removed todo:');
+    console.dir(removedTodo);
+  }
   const [insertionFormHidden, setInsertionFormHidden] = useState(true);
   const [updateFormHidden, setUpdateFormHidden] = useState(true);
   const [updatingTodo, setUpdatingTodo] = useState(null);

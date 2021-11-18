@@ -18,6 +18,14 @@ const updateTodoByIdQuery = `mutation updateTodoById($id: bigint!, $title: Strin
 const InsertionForm = ({ hidden, setHidden, id, update, todo }) => {
   const [insertedTodo, insertTodo] = useMutation(insertTodoQuery);
   const [updatedTodo, updateTodo] = useMutation(updateTodoByIdQuery);
+  if (insertTodo) {
+    console.log('Inserted todo: ');
+    console.dir(insertedTodo);
+  }
+  if (updatedTodo) {
+    console.log('Updated todo: ');
+    console.dir(updatedTodo);
+  }
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
   const dueTimeRef = useRef(null);
