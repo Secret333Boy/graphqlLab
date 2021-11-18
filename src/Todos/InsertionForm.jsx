@@ -32,7 +32,7 @@ const InsertionForm = ({ hidden, setHidden, id, update, todo }) => {
   useEffect(() => {
     titleRef.current.value = todo?.title || '';
     descriptionRef.current.value = todo?.description || '';
-    dueTimeRef.current.value = todo?.dueTime.slice(0, 19) || '';
+    dueTimeRef.current.value = todo?.dueTime?.slice(0, 19) || '';
   }, [todo]);
   return (
     <>
