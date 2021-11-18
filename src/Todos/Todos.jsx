@@ -21,6 +21,8 @@ const removeTodoByIdTemplate = `mutation removeTodoById($id: bigint = "") {
 const Todos = ({ id }) => {
   const [removedTodo, removeTodo] = useMutation(removeTodoByIdTemplate);
   const [insertionFormHidden, setInsertionFormHidden] = useState(true);
+  const [updateFormHidden, setUpdateFormHidden] = useState(true);
+  const [updatingTodo, setUpdatingTodo] = useState(null);
   const TodosQuery = TodosQueryTemplate.replace('$id', id);
   const [result] = useSubscription({ query: TodosQuery });
   const { fetching, error, data } = result;
@@ -35,7 +37,14 @@ const Todos = ({ id }) => {
         setHidden={setInsertionFormHidden}
         id={id}
       />
-      <table style={{ width: '10px' }}>
+      <InsertionForm
+        hidden={updateFormHidden}
+        setHidden={setUpdateFormHidden}
+        id={id}
+        update="true"
+        todo={updatingTodo}
+      />
+      <table>
         <tbody>
           <tr>
             <td>ID</td>
@@ -58,13 +67,26 @@ const Todos = ({ id }) => {
                 >
                   Delete
                 </button>
-                <button>Change</button>
+                <button
+                  onClick={() => {
+                    setUpdatingTodo(todo);
+                    setUpdateFormHidden(false);
+                  }}
+                >
+                  Change
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <button onClick={() => setInsertionFormHidden(false)}>Add todo</button>
+      <button
+        onClick={() => {
+          setInsertionFormHidden(false);
+        }}
+      >
+        Add todo
+      </button>
     </>
   );
 };
