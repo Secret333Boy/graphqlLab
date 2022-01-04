@@ -12,7 +12,7 @@ import Logout from './Auth/Logout.jsx';
 import './App.css';
 
 const subscriptionClient = new SubscriptionClient(
-  'wss://graphql-lab.hasura.app/v1/graphql',
+  process.env.REACT_APP_graphQLLinkws,
   {
     reconnect: true,
     connectionParams: {
@@ -24,7 +24,7 @@ const subscriptionClient = new SubscriptionClient(
 );
 
 const client = createClient({
-  url: 'https://graphql-lab.hasura.app/v1/graphql',
+  url: process.env.REACT_APP_graphQLLink,
   fetchOptions: {
     headers: {
       'x-hasura-admin-secret': process.env.REACT_APP_hasuraAdminSecret,
@@ -40,14 +40,17 @@ const client = createClient({
 });
 
 const getID = async () => {
-  const res = await fetch('/api/getIDByHash');
-  const id = await res.json();
-
-  if (!id) {
-    document.cookie += '; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    return;
+  try {
+    const res = await fetch('/api/getIDByHash');
+    const id = await res.json();
+    if (!id) {
+      document.cookie += '; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+      return;
+    }
+    return id;
+  } catch (e) {
+    console.error(e);
   }
-  return id;
 };
 
 const App = () => {

@@ -12,20 +12,27 @@ const AuthOnly = ({ children }) => {
     const login = loginRef.current.value;
     const pass = passRef.current.value;
     const registerChecked = registerRadioRef.current.checked;
-    const res = await fetch('/api/auth', {
-      headers: { login, pass, register: registerChecked },
-    });
-    const result = await res.json();
-    if (res.status === 200) {
-      const d = new Date();
-      d.setHours(d.getHours() + 3);
-      document.cookie =
-        'token=' + result + '; Path=/; Expires=' + d.toUTCString() + ';';
-      document.location.reload();
-    }
+    try {
+      const res = await fetch('/api/auth', {
+        headers: { login, pass, register: registerChecked },
+      });
+      const result = await res.json();
+      if (res.status === 200) {
+        const d = new Date();
+        d.setHours(d.getHours() + 3);
+        document.cookie =
+          'token=' + result + '; Path=/; Expires=' + d.toUTCString() + ';';
+        document.location.reload();
+      } else {
+        setMessage(String(result));
+      }
 
-    if (result) {
-      setMessage(result);
+      if (result) {
+        setMessage(result);
+      }
+    } catch (e) {
+      console.error(e);
+      setMessage(e);
     }
   };
 
