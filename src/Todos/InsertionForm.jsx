@@ -2,12 +2,11 @@ import React, { useEffect, useRef } from 'react';
 import { useMutation } from 'urql';
 import './InsertionForm.css';
 
-const insertTodoQuery = `mutation insertTodo($title: String!, $description: String = "", $dueTime: timestamptz = "", $creatorId: bigint!) {
-  insert_todo(objects: {title: $title, description: $description, dueTime: $dueTime, creatorId: $creatorId}) {
+const insertTodoQuery = `mutation insertTodo($title: String = "", $description: String = "", $dueTime: timestamptz = "") {
+  insert_todo(objects: {title: $title, description: $description, dueTime: $dueTime}) {
     affected_rows
   }
-}
-`;
+}`;
 
 const updateTodoByIdQuery = `mutation updateTodoById($id: bigint!, $title: String!, $description: String!, $dueTime: timestamptz!) {
   update_todo(where: {id: {_eq: $id}}, _set: {title: $title, description: $description, dueTime: $dueTime}) {
@@ -15,10 +14,10 @@ const updateTodoByIdQuery = `mutation updateTodoById($id: bigint!, $title: Strin
   }
 }`;
 
-const InsertionForm = ({ hidden, setHidden, id, update, todo }) => {
+const InsertionForm = ({ hidden, setHidden, update, todo }) => {
   const [insertedTodo, insertTodo] = useMutation(insertTodoQuery);
   const [updatedTodo, updateTodo] = useMutation(updateTodoByIdQuery);
-  if (insertTodo.data) {
+  if (insertedTodo.data) {
     console.log('Inserted todo: ');
     console.dir(insertedTodo.data);
   }
@@ -51,7 +50,6 @@ const InsertionForm = ({ hidden, setHidden, id, update, todo }) => {
               title,
               description,
               dueTime,
-              creatorId: id,
             });
             return;
           }

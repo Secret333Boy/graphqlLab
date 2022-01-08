@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   createClient,
   Provider,
@@ -7,8 +7,6 @@ import {
 } from 'urql';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import Todos from './Todos/Todos.jsx';
-import AuthOnly from './Auth/AuthOnly.jsx';
-import Logout from './Auth/Logout.jsx';
 import './App.css';
 
 const subscriptionClient = new SubscriptionClient(
@@ -39,35 +37,11 @@ const client = createClient({
   requestPolicy: 'cache-and-network',
 });
 
-const getID = async () => {
-  try {
-    const res = await fetch('/api/getIDByHash');
-    const id = await res.json();
-    if (!id) {
-      document.cookie += '; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-      return;
-    }
-    return id;
-  } catch (e) {
-    console.error(e);
-  }
-};
-
 const App = () => {
-  const [id, setID] = useState(() => {
-    getID().then((id) => {
-      setID(id);
-    });
-  });
-  if (!id) return <p>Loading user data...</p>;
-
   return (
     <Provider value={client}>
       <div className="App">
-        <AuthOnly>
-          <Todos id={id} />
-          <Logout />
-        </AuthOnly>
+        <Todos />
       </div>
     </Provider>
   );

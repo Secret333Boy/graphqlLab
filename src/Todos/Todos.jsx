@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import InsertionForm from './InsertionForm.jsx';
 import { useMutation, useSubscription } from 'urql';
 
-const TodosQuery = `subscription subscribeTodosByID($id: bigint!) {
-  todo(limit: 10, offset: 0, where: {creatorId: {_eq: $id}}, order_by: {creationTime: asc}) {
+const TodosQuery = `subscription TodosQuery {
+  todo {
     id
     title
     description
@@ -12,13 +12,13 @@ const TodosQuery = `subscription subscribeTodosByID($id: bigint!) {
   }
 }`;
 
-const removeTodoByIdQuery = `mutation removeTodoById($id: bigint = "") {
+const removeTodoByIdQuery = `mutation removeTodoById($id: bigint) {
   delete_todo(where: {id: {_eq: $id}}) {
     affected_rows
   }
 }`;
 
-const Todos = ({ id }) => {
+const Todos = () => {
   const [removedTodo, removeTodo] = useMutation(removeTodoByIdQuery);
   if (removedTodo.data) {
     console.log('Removed todo:');
@@ -27,9 +27,9 @@ const Todos = ({ id }) => {
   const [insertionFormHidden, setInsertionFormHidden] = useState(true);
   const [updateFormHidden, setUpdateFormHidden] = useState(true);
   const [updatingTodo, setUpdatingTodo] = useState(null);
-  const [result] = useSubscription({ query: TodosQuery, variables: { id } });
+  const [result] = useSubscription({ query: TodosQuery });
   const { fetching, error, data } = result;
-  if (fetching || !id) return <p>Loading...</p>;
+  if (fetching) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
   if (!data) return <p>No data</p>;
   const todos = data.todo;
@@ -38,12 +38,10 @@ const Todos = ({ id }) => {
       <InsertionForm
         hidden={insertionFormHidden}
         setHidden={setInsertionFormHidden}
-        id={id}
       />
       <InsertionForm
         hidden={updateFormHidden}
         setHidden={setUpdateFormHidden}
-        id={id}
         update="true"
         todo={updatingTodo}
       />
