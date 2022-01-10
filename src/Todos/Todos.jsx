@@ -33,6 +33,10 @@ const Todos = () => {
   if (error) return <p>Error: {error.message}</p>;
   if (!data) return <p>No data</p>;
   const todos = data.todo;
+  todos.map((todo) => {
+    if (new Date(todo.dueTime) < Date.now()) todo.dueTime = '[Expired]';
+    return todo;
+  });
   return (
     <>
       <InsertionForm
