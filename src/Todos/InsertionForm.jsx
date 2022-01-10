@@ -25,6 +25,12 @@ const InsertionForm = ({ hidden, setHidden, update, todo }) => {
     console.log('Updated todo: ');
     console.dir(updatedTodo.data);
   }
+  if (insertedTodo.error) {
+    console.error(insertedTodo.error);
+  }
+  if (updatedTodo.error) {
+    console.error(updatedTodo.error);
+  }
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
   const dueTimeRef = useRef(null);

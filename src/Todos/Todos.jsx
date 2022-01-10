@@ -3,7 +3,7 @@ import InsertionForm from './InsertionForm.jsx';
 import { useMutation, useSubscription } from 'urql';
 
 const TodosQuery = `subscription TodosQuery {
-  todo {
+  todo(order_by: {creationTime: asc}) {
     id
     title
     description
@@ -33,10 +33,6 @@ const Todos = () => {
   if (error) return <p>Error: {error.message}</p>;
   if (!data) return <p>No data</p>;
   const todos = data.todo;
-  todos.map((todo) => {
-    if (new Date(todo.dueTime) < Date.now()) todo.dueTime = '[Expired]';
-    return todo;
-  });
   return (
     <>
       <InsertionForm
@@ -61,9 +57,14 @@ const Todos = () => {
           </tr>
           {todos.map((todo) => (
             <tr key={todo.id}>
-              {Object.entries(todo).map(([key, data]) => (
-                <td key={key}>{data}</td>
-              ))}
+              {Object.entries(todo).map(([key, data]) => {
+                if (key === 'dueTime') {
+                  if (!todo.dueTime) return <td key={key}>{'[Not given]'}</td>;
+                  if (new Date(todo.dueTime) < Date.now())
+                    return <td key={key}>{'[Expired]'}</td>;
+                }
+                return <td key={key}>{data}</td>;
+              })}
               <td>
                 <button
                   onClick={() => {
