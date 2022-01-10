@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   createClient,
   Provider,
@@ -38,6 +38,14 @@ const client = createClient({
 });
 
 const App = () => {
+  const [online, setOnline] = useState(true);
+  window.onoffline = () => {
+    setOnline(false);
+  };
+  window.ononline = () => {
+    setOnline(true);
+  };
+  if (!online) return <div>Offline...</div>;
   return (
     <Provider value={client}>
       <div className="App">
