@@ -24,6 +24,9 @@ const Todos = () => {
     console.log('Removed todo:');
     console.dir(removedTodo.data);
   }
+  if (removedTodo.error) {
+    console.error(removedTodo.error);
+  }
   const [insertionFormHidden, setInsertionFormHidden] = useState(true);
   const [updateFormHidden, setUpdateFormHidden] = useState(true);
   const [updatingTodo, setUpdatingTodo] = useState(null);
